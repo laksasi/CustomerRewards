@@ -17,6 +17,6 @@ public class RewardService {
         return purchaseAmount.compareTo(hundredDollars) > 0
                 ? purchaseAmount.subtract(hundredDollars).multiply(BigDecimal.valueOf(2)).add(fiftyDollars)
                 : purchaseAmount.compareTo(fiftyDollars) > 0
-                ? fiftyDollars : diff;
+                ? purchaseAmount.subtract(fiftyDollars).multiply(BigDecimal.valueOf(1)) : diff;
     }
 }

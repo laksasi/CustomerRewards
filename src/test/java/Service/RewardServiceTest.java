@@ -39,6 +39,14 @@ public class RewardServiceTest {
         CustomerEntity customerEntity = new CustomerEntity("John", BigDecimal.valueOf(50.01));
         RewardService rewardService = new RewardService();
         BigDecimal result = rewardService.calculateRewards(customerEntity);
-        assertEquals(50, result.intValue());
+        assertEquals(0, result.intValue());
+    }
+
+    @Test
+    public void testRewardPointsInput5() {
+        CustomerEntity customerEntity = new CustomerEntity("John", BigDecimal.valueOf(70.01));
+        RewardService rewardService = new RewardService();
+        BigDecimal result = rewardService.calculateRewards(customerEntity);
+        assertEquals(20, result.intValue());
     }
 }
