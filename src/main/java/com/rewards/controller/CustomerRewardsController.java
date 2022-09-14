@@ -16,22 +16,19 @@ public class CustomerRewardsController {
     @Autowired
     private RewardService rewardService;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-
     @PostMapping("/customer")
     public CustomerEntity createCustomerOrder(@RequestBody CustomerEntity customer) {
         if (customer == null) {
             throw new IllegalArgumentException("customer object can not be null");
         }
-        return customerRepository.save(customer);
+        return rewardService.save(customer);
     }
 
     @GetMapping("/customer/{id}")
     @ApiImplicitParam(name="id",value = "",required = true,dataType = "int",paramType = "path",allowMultiple = false)
     public BigDecimal getRewardPointsByCustomerId(@PathVariable("id") Integer customerId) {
-        CustomerEntity customerEntity = customerRepository.
-                findById(customerId)
+        CustomerEntity customerEntity = rewardService.
+                getCustomerEntityById(customerId)
                 .orElseThrow(EntityNotFoundException::new);
         return rewardService.calculateRewards(customerEntity);
     }

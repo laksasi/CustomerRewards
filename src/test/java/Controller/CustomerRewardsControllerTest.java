@@ -2,7 +2,6 @@ package Controller;
 
 import com.rewards.controller.CustomerRewardsController;
 import com.rewards.entity.CustomerEntity;
-import com.rewards.repository.CustomerRepository;
 import com.rewards.service.RewardService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,9 +24,6 @@ public class CustomerRewardsControllerTest {
     CustomerRewardsController customerRewardsController;
 
     @Mock
-    CustomerRepository customerRepository;
-
-    @Mock
     RewardService rewardService;
 
     @Test()
@@ -40,7 +36,7 @@ public class CustomerRewardsControllerTest {
 
     @Test()
     public void CreateCustomerSuccessOutput() {
-        Mockito.doReturn(populateCustomerEntity()).when(customerRepository).save(Mockito.any());
+        Mockito.doReturn(populateCustomerEntity()).when(rewardService).save(Mockito.any());
         CustomerEntity result =
                 customerRewardsController.createCustomerOrder(populateCustomerEntity());
         assertEquals("John", result.getFirstName());
@@ -56,7 +52,7 @@ public class CustomerRewardsControllerTest {
 
     @Test()
     public void getRewardsForHundredDollarsPurchaseAmount() {
-        Mockito.doReturn(Optional.of(populateCustomerEntity())).when(customerRepository).findById(Mockito.any());
+        Mockito.doReturn(Optional.of(populateCustomerEntity())).when(rewardService).getCustomerEntityById(Mockito.any());
         Mockito.when(rewardService.calculateRewards(Mockito.any())).thenReturn(BigDecimal.valueOf(52.00));
         BigDecimal result =
                 customerRewardsController.getRewardPointsByCustomerId(1);
@@ -64,6 +60,7 @@ public class CustomerRewardsControllerTest {
     }
 
     private CustomerEntity populateCustomerEntity() {
+
         return new CustomerEntity("John", BigDecimal.valueOf(100.02));
     }
 

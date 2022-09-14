@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rewards.entity.CustomerEntity;
 import com.rewards.main.RewardsApplication;
+import com.rewards.repository.CustomerRepository;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -29,6 +33,9 @@ public class RewardsApplicationIntegrationTest {
     private MockMvc mvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @BeforeEach
     public void setUp() {
@@ -74,5 +81,20 @@ public class RewardsApplicationIntegrationTest {
         assertEquals("90.00", mvcResult.getResponse().getContentAsString());
     }
 
+    @Test
+    @Ignore
+    public void testFindById() {
+        CustomerEntity customerEntity = new CustomerEntity("John", BigDecimal.valueOf(120.00));
+        customerRepository.save(customerEntity);
+        CustomerEntity result = customerRepository.findById(customerEntity.getId()).get();
+        assertEquals(customerEntity.getFirstName(), result.getFirstName());
+    }
 
+    @Test
+    @Ignore
+    public void testSave() {
+        CustomerEntity customerEntity = new CustomerEntity("John", BigDecimal.valueOf(120.00));
+        CustomerEntity result = customerRepository.save(customerEntity);
+        assertEquals(customerEntity.getFirstName(), result.getFirstName());
+    }
 }
