@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rewards.entity.CustomerEntity;
 import com.rewards.main.RewardsApplication;
+import com.rewards.model.Customer;
 import com.rewards.repository.CustomerRepository;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -37,6 +39,9 @@ public class RewardsApplicationIntegrationTest {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -58,15 +63,15 @@ public class RewardsApplicationIntegrationTest {
     @Order(1)
     public void createCustomer() throws Exception {
         String uri = "/customer";
-        CustomerEntity customerEntity = new CustomerEntity("John", BigDecimal.valueOf(120.00));
+        Customer customer = new Customer("John", BigDecimal.valueOf(120.00));
 
-        String inputJson = mapToJson(customerEntity);
+        String inputJson = mapToJson(customer);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
-        CustomerEntity result = mapFromJson(mvcResult.getResponse().getContentAsString(), CustomerEntity.class);
+        Customer result = mapFromJson(mvcResult.getResponse().getContentAsString(), Customer.class);
         assertEquals(1, result.getId().intValue());
     }
 

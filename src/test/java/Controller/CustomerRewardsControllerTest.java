@@ -2,6 +2,7 @@ package Controller;
 
 import com.rewards.controller.CustomerRewardsController;
 import com.rewards.entity.CustomerEntity;
+import com.rewards.model.Customer;
 import com.rewards.service.RewardService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
@@ -21,10 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CustomerRewardsControllerTest {
 
     @InjectMocks
-    CustomerRewardsController customerRewardsController;
+    private CustomerRewardsController customerRewardsController;
 
     @Mock
-    RewardService rewardService;
+    private RewardService rewardService;
+    @Mock
+    private ModelMapper modelMapper;
+
 
     @Test()
     public void CreateCustomerNullInput() {
@@ -36,9 +41,15 @@ public class CustomerRewardsControllerTest {
 
     @Test()
     public void CreateCustomerSuccessOutput() {
-        Mockito.doReturn(populateCustomerEntity()).when(rewardService).save(Mockito.any());
-        CustomerEntity result =
-                customerRewardsController.createCustomerOrder(populateCustomerEntity());
+        CustomerEntity customerEntity = populateCustomerEntity();
+        Mockito.when(modelMapper.map(Mockito.any(), Mockito.eq(CustomerEntity.class))).thenReturn(customerEntity);
+        Mockito.when(modelMapper.map(Mockito.any(), Mockito.eq(Customer.class))).
+                thenReturn(new Customer("John",
+                        BigDecimal.valueOf(12.00)));
+        Mockito.doReturn(customerEntity).when(rewardService).save(Mockito.any());
+        Customer result =
+                customerRewardsController.createCustomerOrder(new Customer("John",
+                        BigDecimal.valueOf(12.00)));
         assertEquals("John", result.getFirstName());
     }
 

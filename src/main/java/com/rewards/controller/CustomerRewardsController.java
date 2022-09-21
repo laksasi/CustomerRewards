@@ -1,9 +1,11 @@
 package com.rewards.controller;
 
 import com.rewards.entity.CustomerEntity;
+import com.rewards.model.Customer;
 import com.rewards.repository.CustomerRepository;
 import com.rewards.service.RewardService;
 import io.swagger.annotations.ApiImplicitParam;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +17,17 @@ public class CustomerRewardsController {
 
     @Autowired
     private RewardService rewardService;
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     @PostMapping("/customer")
-    public CustomerEntity createCustomerOrder(@RequestBody CustomerEntity customer) {
+    public Customer createCustomerOrder(@RequestBody Customer customer) {
         if (customer == null) {
             throw new IllegalArgumentException("customer object can not be null");
         }
-        return rewardService.save(customer);
+        CustomerEntity customerEntity = modelMapper.map(customer, CustomerEntity.class);
+        return modelMapper.map(rewardService.save(customerEntity), Customer.class);
     }
 
     @GetMapping("/customer/{id}")

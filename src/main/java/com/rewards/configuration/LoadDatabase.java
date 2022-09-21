@@ -2,9 +2,12 @@ package com.rewards.configuration;
 
 import com.rewards.entity.CustomerEntity;
 import com.rewards.repository.CustomerRepository;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
@@ -18,5 +21,10 @@ public class LoadDatabase {
             CustomerEntity customer = new CustomerEntity("John", BigDecimal.valueOf(200.01));
             log.info("Preloading " + repository.save(customer));
         };
+    }
+
+    @Bean
+    public ModelMapper modelMapper(){
+        return  new ModelMapper();
     }
 }
